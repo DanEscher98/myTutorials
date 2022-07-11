@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head><title>Space Invaders</title></head>
+	<body>
+		<h1>Space Invaders</h1>
+		<!-- Game canvas -->
+		<canvas id="canvas" width="800" height="600"></canvas>
+		<!-- JS Game Logic -->
+		<script>
+			var game = {};
+			game.canvas = document.getElementById('canvas');
+			game.ctx = game.canvas.getContext("2d");
+			game.backgroundColor = '#000000';
+			
+			// Define a function to handle the game loop
+			game.update = function() {
+				// Draw canvas background
+				game.ctx.fillStyle = game.backgroundColor;
+				game.ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
+			}
+
+			// Defines a function to handle key events
+			game.keydown = function(e) {
+
+			}
+
+			// Defines a function to stop the game loop
+			game.stop = function() {
+				clearInterval(game.interval);
+			}
+
+			// Defines a function to restart the game
+			game.restart = function() {
+				game.stop();
+				game.init();
+			}
+
+			// Start the game on window load
+			window.onload = game.init;
+			// Detect key events
+			window.onkeydown = game.keydown;
+		</script>
+	</body>
+</html>
