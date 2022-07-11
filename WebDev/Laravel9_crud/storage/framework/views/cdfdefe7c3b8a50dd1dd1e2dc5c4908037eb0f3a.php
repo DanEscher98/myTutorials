@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,  initial-scale=1">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>Laravel 8|7|6 CRUD App Example</title>
+		<link rel="stylesheet"
+		href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<?php echo $__env->yieldContent('content'); ?>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+		<script
+	  src="https://cdn.jsdeliver.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+		<script
+	  src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	</body>
+</html>
+<?php /**PATH /run/media/dany98/Shared/Working/Tutorials/WebDev/VUE_laravel9crud/resources/views/layout.blade.php ENDPATH**/ ?>

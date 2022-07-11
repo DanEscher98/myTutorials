@@ -1,4 +1,5 @@
-/vendor/
+vendor/
+storage/
 node_modules/
 npm-debug.log
 yarn-error.log
@@ -15,9 +16,10 @@ public/hot
 public_html/storage
 public_html/hot
 
+artisan
 storage/*.key
 .env
 Homestead.yaml
 Homestead.json
-/.vagrant
+.vagrant
 .phpunit.result.cache
