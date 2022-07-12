@@ -18,8 +18,9 @@ public_html/hot
 
 artisan
 storage/*.key
-.env
-Homestead.yaml
-Homestead.json
-.vagrant
-.phpunit.result.cache
+		 .env
+		 Homestead.yaml
+		 Homestead.json
+		 .vagrant
+		 .phpunit.result.cache
+		 artisan
