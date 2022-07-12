@@ -7,6 +7,79 @@
 		<canvas id="canvas" width="800" height="600"></canvas>
 		<!-- JS Game Logic -->
 		<script>
+			class GameObject {
+				constructor(x, y, width, height, color) {
+					this.x = x;
+					this.y = y;
+					this.width = width;
+					this.height = height;
+					this.color = color;
+				}
+
+				draw(ctx) {
+					ctx.fillStyle = this.color;
+					ctx.fillRect(this.x, this.y, this.width, this.height);
+				}
+
+				update(dx, dy) {
+					this.x += dx;
+					this.y += dy;
+				}
+
+				collideWith(obj) {
+					inside_xaxis = this.x < (obj.x + obj.width) && obj.x <
+						(this.x + this.width);
+					inside_yaxis = this.y < (obj.y + obj.height) && obj.y <
+						(this.y + this.height);
+					return (inside_xaxis && inside_yaxis);
+
+				}
+			}
+
+			class Bullet extends GameObject {
+				constructor(x, y, width, height, color, dy) {
+					super(x, y, width, height, color);
+					this.dy = dy;
+				}
+
+				update(dx, dy) {
+					this.y += this.dy;
+				}
+			}
+
+			class SpaceShip extends GameObject {
+				constructor(x, y, width, height, color, canvasHeight) {
+					super(x, y, width, height, color);
+					this.canvasHeight = canvasHeight;
+					this.bulletWidth = 4;
+					this.bulletHeight = 8;
+					this.bulletColor = '#ff7800'
+					this.bullets = [];
+				}
+				draw(ctx) {
+					super.draw(ctx);
+					for (var i=0; i<this.bullets.length; i++) {
+						this.bullets[i].draw(ctx);
+						this.bullets[i].update(0, 0);
+						// Check if the bullet is out of bounds
+						if (this.bullets[i].y < 0 || this.bullets[i].y >
+							this.canvasHeight) {
+							this.bullets.splice(i, 1);
+						}
+					}
+				}
+
+				shoot(dy) {
+					this.bullets.push(new Bullet(
+						this.x + this.width / 2 - this.bulletWidth / 2,
+						this.y - this.bulletHeight,
+						this.bulletWidth,
+						this.bulletHeight,
+						this.bulletColor
+					))
+				}
+			}
+
 			var game = {};
 			game.canvas = document.getElementById('canvas');
 			game.ctx = game.canvas.getContext("2d");
