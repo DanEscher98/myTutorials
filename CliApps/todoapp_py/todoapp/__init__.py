@@ -1,3 +1,5 @@
+"""App to keep track of To-Do tasks"""
+
 __version__ = "0.1.0"
 __app_name__ = "todoapp"
 
