@@ -20,4 +20,4 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.poetry.scripts]
-usbburn = "todoapp.__main__:main"
+todoapp = "todoapp.__main__:main"

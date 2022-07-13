@@ -1,9 +1,10 @@
-""""To-Do entry point script """"
+""""To-Do entry point script """
 
-from todoapp import cli, __main__
+from todoapp import __app_name__, __main__, cli
+
 
 def main():
     cli.app(prog_name=__app_name__)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
