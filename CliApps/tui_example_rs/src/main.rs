@@ -1,3 +1,5 @@
+//! Based on [Rust and TUI](https://blog.logrocket.com/rust-and-tui-building-a-command-line-interface-in-rust/)
+
 use chrono::prelude::*;
 use crossterm::{
     event::{self, Event as CEvent, KeyCode},
