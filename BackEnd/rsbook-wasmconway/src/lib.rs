@@ -8,6 +8,7 @@
 mod utils;
 
 use wasm_bindgen::prelude::*;
+use std::fmt;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -33,6 +34,8 @@ pub struct Universe {
 #[wasm_bindgen]
 impl Universe {
     fn get_index(&self, row: u32, column: u32) -> usize {
+        assert!(row < self.height);
+        assert!(column < self.width);
         (row * self.width + column) as usize
     }
 
@@ -53,9 +56,10 @@ impl Universe {
         count
     }
 
+    /// compute the next state of the universe
     pub fn tick(&mut self) {
-        let mut next_cells: Vec<Cell> =
-            Vec::with_capacity((self.width * self.height) as usize);
+        let mut next_cells: Vec<Cell> = self.cells.clone();
+        // Vec::with_capacity((self.width * self.height) as usize);
         
         for row in 0..self.height {
             for col in 0..self.width {
@@ -76,4 +80,109 @@ impl Universe {
         self.cells = next_cells;
     }
 
+    pub fn new(height: u32, width: u32) -> Self {
+
+        let cells = (0..width*height)
+            .map(|i| {
+                if i%2 == 0 || i%7 == 0 {
+                    Cell::Alive
+                } else {
+                    Cell::Dead
+                }
+            })
+            .collect();
+        Universe {
+            width,
+            height,
+            cells
+        }
+    }
+
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+    pub fn cells(&self) -> *const Cell {
+        self.cells.as_ptr()
+    }
+
+    pub fn render(&self) -> String {
+        self.to_string()
+    }
 }
+
+impl fmt::Display for Universe {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for line in self.cells.as_slice().chunks(self.width as usize) {
+            for &cell in line {
+                let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
+                write!(f, " {} ", symbol)?;
+            }
+            write!(f, "\n")?;
+        }
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn construct_universe() {
+        let (height, width) = (64, 64);
+        let uni = Universe::new(height, width);
+        assert_eq!(uni.height, height);
+        assert_eq!(uni.width, width);
+        assert_eq!(uni.cells.iter().len(), (height*width) as usize);
+    } 
+
+    #[test]
+    fn check_some_indexes() {
+        use rand::Rng;
+        
+        let (height, width) = (64, 64);
+        let uni = Universe::new(height, width);
+        let mut rng = rand::thread_rng();
+        for _ in 0..10 {
+            let rnd_row = rng.gen_range(0..uni.height);
+            let rnd_col = rng.gen_range(0..uni.width);
+            let idx = uni.get_index(rnd_row, rnd_col);
+            assert!(idx < (uni.height*uni.width) as usize);
+        }
+    }
+
+    #[test]
+    fn can_visit_all_neighbours() {
+
+        let (height, width) = (64, 64);
+        let uni = Universe::new(height, width);
+        for i in 0..uni.height {
+            for j in 0..uni.width {
+                uni.count_live_neighbor(i, j);
+            }
+        }
+    }
+
+    #[test]
+    fn next_state() {
+        let (height, width) = (64, 64);
+        let mut uni = Universe::new(height, width);
+        uni.tick();
+    }
+
+    #[test]
+    fn draw_universe() {
+        use std::io::{self, Write};
+        let (height, width) = (16, 16);
+        let mut uni = Universe::new(height, width);
+        assert!(write!(io::stdout(), "\n{}", uni).is_ok());
+        uni.tick();
+        println!("---- ---- ---- ---- ---- ---- ---- ---- ");
+
+        assert!(write!(io::stdout(), "\n{}", uni).is_ok());
+    }
+}
+

@@ -1,5 +1,5 @@
 [package]
-name = "rsbook-wasmconway"
+name = "wasmconway"
 version = "0.1.0"
 authors = ["danyiel5978@gmail.com <danyiel5978@gmail.com>"]
 edition = "2018"
@@ -26,6 +26,7 @@ wee_alloc = { version = "0.4.5", optional = true }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.13"
+rand = "0.8.5"
 
 [profile.release]
 # Tell `rustc` to optimize for small code size.
