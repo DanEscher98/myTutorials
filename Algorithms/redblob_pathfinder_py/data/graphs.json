@@ -1,0 +1,19 @@
+[
+  {
+    "name": "simplegraph_1",
+    "edges": {
+      "A": ["B"],
+      "B": ["C"],
+      "C": ["B", "D", "F"],
+      "D": ["C", "E"],
+      "E": ["F"],
+      "F": []
+    }
+  },
+  {
+    "name": "simplegraph_2",
+    "edges": {
+      "A": []
+    }
+  }
+]
