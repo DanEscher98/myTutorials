@@ -47,19 +47,43 @@
   },
   {
     "type": "AdjacencyMatrix",
+    "name": "weighted and directed #1",
+    "edges": {
+      "Nodes": ["A", "B", "C", "D", "E", "F"],
+      "A": [null, null, null, null, 0.1, 0.9],
+      "B": [0.3, null, 0.3, 0.4, null, null],
+      "C": [null, null, null, 0.6, 0.4, null],
+      "D": [null, null, null, null, 1.0, null],
+      "E": [0.55, null, null, null, null, 0.45],
+      "F": [null, null, null, 1.0, null, null]
+    }
+  },
+  {
+    "type": "AdjacencyWeights",
     "name": "template",
     "edges": {
-      "Nodes": ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
-      "A": [null, null, null, null, null, null, null, null, null, null],
-      "B": [null, null, null, null, null, null, null, null, null, null],
-      "C": [null, null, null, null, null, null, null, null, null, null],
-      "D": [null, null, null, null, null, null, null, null, null, null],
-      "E": [null, null, null, null, null, null, null, null, null, null],
-      "F": [null, null, null, null, null, null, null, null, null, null],
-      "G": [null, null, null, null, null, null, null, null, null, null],
-      "H": [null, null, null, null, null, null, null, null, null, null],
-      "I": [null, null, null, null, null, null, null, null, null, null],
-      "J": [null, null, null, null, null, null, null, null, null, null]
+      "1": {"2": 10, "3": 6, "4": 6},
+      "2": {"7": 10, "8": 6},
+      "3": {"9": 10, "10": 3},
+      "4": {"5": 8, "6": 3},
+      "5": {"11": 3, "12": 3},
+      "6": {"7": 10, "12": 8},
+      "7": {"13": 6, "14": 6},
+      "8": {"13": 10, "15": 3},
+      "9": {"16": 3},
+      "10": {"16": 10},
+      "11": {"16": 3},
+      "12": {"16": 3},
+      "13": {"17": 3, "18": 6},
+      "14": {"18": 6},
+      "15": {"17": 10, "20": 12},
+      "16": {"18": 13, "20": 8},
+      "17": {"19": 6},
+      "18": {"19": 3, "20": 11},
+      "19": {"20": 5},
+      "20": {}
+      
     }
   }
+
 ]

@@ -1,6 +1,4 @@
-from typing import (
-    Optional, Any, List, Dict, TypeAlias, Tuple, Iterable
-)
+from typing import Optional, Any, List, Dict, TypeAlias, Tuple, Iterable
 from abc import ABC, abstractmethod
 import json
 import collections
@@ -12,15 +10,16 @@ Location: TypeAlias = str
 GridCell: TypeAlias = Tuple[int, int]
 Node: TypeAlias = Location | GridCell
 IterNodes: TypeAlias = Iterable[Node]
-Matrix: TypeAlias = List[List[float]]
 # IterNode: TypeAlias = Iterable[Node] | Dict[]
 
 NodeFrom: TypeAlias = Dict[Node, Optional[Node]]
 NodeWeightsFrom: TypeAlias = Tuple[NodeFrom, Dict[Node, float]]
 GPath: TypeAlias = Optional[IterNodes]
 
+
+MatrixWeights: TypeAlias = List[List[float]]
 AdjacencyList: TypeAlias = Dict[Location, IterNodes]
-AdjacencyMatrix: TypeAlias = Tuple[IterNodes, Matrix]  # TODO
+AdjacencyMatrix: TypeAlias = Tuple[IterNodes, MatrixWeights]  # TODO
 AdjacencyWeights: TypeAlias = Dict[Node, Dict[Node, float]]
 IncidenceMatrix: TypeAlias = Any  # TODO
 
@@ -71,19 +70,27 @@ class SimpleGraph(Graph):
 
 
 class WeightedGraph(Graph):
-    def __init__(self, node_labels, matrix):
-        self.node_labels: List[Node] = node_labels
-        self.edges: Matrix = matrix
-        self.__weighted_edges: Dict[Node, Any] = dict(map(
-            lambda node: (node, dict(self.__neighbours(node))),
-            self.node_labels))
+    def __init__(self, edges, node_labels=None):
+        self.edges = edges
+        self.__node_labels: List[Node] = node_labels if node_labels else []
+        self.__weighted_edges: Dict[Node, Any] = (
+            self.__matrix_edges() if node_labels else self.edges
+        )
+
+    def __matrix_edges(self):
+        return dict(
+            map(
+                lambda node: (node, dict(self.__neighbours_matrix(node))),
+                self.__node_labels,
+            )
+        )
 
     def __node2idx(self, loc: Node) -> int:
-        return self.node_labels.index(loc)
+        return self.__node_labels.index(loc)
 
-    def __neighbours(self, loc: Node) -> Iterable[Tuple[Node, float]]:
+    def __neighbours_matrix(self, loc: Node) -> Iterable[Tuple[Node, float]]:
         row = self.edges[self.__node2idx(loc)]
-        for (node, weight) in zip(self.node_labels, row):
+        for (node, weight) in zip(self.__node_labels, row):
             if not math.isnan(weight):
                 yield node, weight
 
@@ -129,8 +136,7 @@ class GridWithWeight(SquareGrid):
             raise SystemExit(f"Node: {to_node} not found")
 
 
-def get_graph(
-        file_path: str, id: int) -> Graph:
+def get_graph(file_path: str, id: int) -> Graph:
     with open(file_path) as file:
         data = json.load(file)[id]  # TODO: catch error if invalid json
 
@@ -147,6 +153,13 @@ def get_graph(
             except Exception as err:
                 raise SystemExit(f"Get graph Error: {err}")
             return WeightedGraph(nodes, matrix)
+        case "AdjacencyWeights":
+            try:
+                edges = get_graph_adjacency_weights(data["edges"])
+            except Exception as err:
+                raise SystemExit(f"Get graph Error: {err}")
+            return WeightedGraph(edges)
+
         case _:
             raise SystemExit("Invalid graph type")
 
@@ -159,7 +172,7 @@ def get_graph_adjacency_list(data) -> AdjacencyList:
 def get_graph_adjacency_matrix(data) -> AdjacencyMatrix:
     def get_value(node, idx) -> float:
         if not (weight := data[node][idx]):
-            weight = 'nan'
+            weight = "nan"
         try:
             return float(weight)
         except ValueError:
@@ -173,7 +186,13 @@ def get_graph_adjacency_matrix(data) -> AdjacencyMatrix:
     return (nodes, matrix)
 
 
+def get_graph_adjacency_weights(data) -> AdjacencyWeights:
+    return data
+
+
 def __printmatrix(matrix):
-    print('\n'.join([' '.join(['{:4}'.format(item)
-                    for item in row])
-                    for row in matrix]), end="\n\n")
+    print(
+        "\n".join([" ".join(["{:4}".format(item)
+                             for item in row]) for row in matrix]),
+        end="\n\n",
+    )

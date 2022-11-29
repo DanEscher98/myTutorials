@@ -1,6 +1,12 @@
 from pathfinder.graph_utils import (
-    Graph, Queue, Node, NodeFrom, GPath,
-    WeightedGraph, PriorityQueue, NodeWeightsFrom
+    Graph,
+    Queue,
+    Node,
+    NodeFrom,
+    GPath,
+    WeightedGraph,
+    PriorityQueue,
+    NodeWeightsFrom,
 )
 
 

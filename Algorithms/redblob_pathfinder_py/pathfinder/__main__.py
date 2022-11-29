@@ -5,12 +5,16 @@ Based on [Intro to A*](https://www.redblobgames.com/pathfinding)
 import sys
 from pathfinder.graph_utils import get_graph, WeightedGraph, SimpleGraph
 from pathfinder.breadth_fst import (
-        breadth_fst, reconstruct_path, dijkstra_search, get_final_cost)
+    breadth_fst,
+    reconstruct_path,
+    dijkstra_search,
+    get_final_cost,
+)
 
 
 def main():
     id = sys.argv[1]
-    (start, end) = ("G", "H")
+    (start, end) = ("1", "20")
 
     graph = get_graph("data/graphs.json", int(id))
 
