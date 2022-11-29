@@ -1,25 +1,42 @@
-from typing import List, TypeVar, Optional, Any
-import json
-from abc import ABC, abstractmethod
-
-Location = TypeVar('Location')
-class Graph(ABC):
-    @abstractmethod
-    def neighbors(self, id: Location) -> list[Location]:
-        pass
-
-class SimpleGraph(Graph):
-    def __init__(self, graph_data: dict):
-        self.edges: dict[Location, List[Location]] = graph_data
-
-    def neighbors(self, id: Location) -> List[Location]:
-        return self.edges[id]
+from pathfinder.graph_utils import Graph, Queue, Node, NodeFrom, GPath
 
 
-def get_valid_graph(file_path: str, id: int) -> Optional[Any]:
-    with open(file_path) as file:
-        data = json.load(file)[id]["edges"]
-    # TODO: data validation
-    return data
+def breadth_fst(graph: Graph, start: Node, goal: Node) -> NodeFrom:
+    frontier = Queue()
+    frontier.put(start)
+    came_from: NodeFrom = {}
+    came_from[start] = None
+
+    while not frontier.empty():
+        current: Node = frontier.get()
+        if current == goal:  # greedy exit
+            break
+
+        for next in graph.neighbours(current):
+            if next not in came_from:
+                frontier.put(next)
+                came_from[next] = current
+
+    return came_from
 
 
+def reconstruct_path(came_from: NodeFrom, start: Node, goal: Node) -> GPath:
+    path = [goal]
+    counter = 0
+
+    try:
+        step = came_from[goal]
+    except KeyError:
+        return None
+
+    while step:
+        path.append(step)
+        counter += 1
+        if step == start:
+            break
+        if counter > len(came_from):
+            return None
+        step = came_from[step]
+
+    path.reverse()
+    return path
