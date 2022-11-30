@@ -14,7 +14,7 @@ from pathfinder.breadth_fst import (
 
 def main():
     id = sys.argv[1]
-    (start, end) = ("1", "20")
+    (start, end) = ("1", "18")
 
     graph = get_graph("data/graphs.json", int(id))
 

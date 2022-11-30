@@ -7,6 +7,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
+networkx = "^2.8.8"
+matplotlib = "^3.6.2"
 
 
 [build-system]
@@ -15,3 +17,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 main = "pathfinder.__main__:main"
+jupyter = "python -m jupyter notebook --no-browser"
