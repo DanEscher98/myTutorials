@@ -1,3 +1,7 @@
+#![allow(dead_code)]
+#![allow(unused_macros)]
+#![allow(unused_variables)]
+
 pub fn add(left: usize, right: usize) -> usize {
     left + right
 }
@@ -34,7 +38,10 @@ macro_rules! twoargs {
 /// 
 macro_rules! mapsum {
     ($( $x:expr; [ $( $y:expr ),* ]);*) => {
-        &[ $($( $x + $y ),*),* ]
+        {
+            let ret = &[ $($( $x + $y ),*),* ];
+            ret
+        }
     }
 }
 
