@@ -1,0 +1,15 @@
+set shell := ["bash", "-c"]
+CFLAGS := "-O3 -fomit-frame-pointer -march=native -funroll-loops -static -lm"
+CTARGET := "nbody_c/nbody.gcc-8"
+
+clang:
+  clang {{CFLAGS}} {{CTARGET}}.c -o {{CTARGET}}.clang.out
+
+gcc:
+  gcc {{CFLAGS}} {{CTARGET}}.c -o {{CTARGET}}.gcc.out
+
+bench: clang gcc
+  hyperfine --warmup 3 --shell=none './{{CTARGET}}.clang.out' './{{CTARGET}}.gcc.out'
+
+clear:
+  rm -rf {{CTARGET}}.*.out
