@@ -1,4 +1,6 @@
 use std::rc::Rc;
+//use std::sync::Arc;
+// for thread safe, just change each `Rc` to `Arc`
 
 pub struct List<T> {
     head: Link<T>
@@ -57,3 +59,14 @@ impl<'a, T> Iterator for Iter<'a, T> {
     }
 }
 
+impl<T> Drop for List<T> {
+    fn drop(&mut self) {
+        let mut head = self.head.take();
+        while let Some(node) = head {
+            let Ok(mut node) = Rc::try_unwrap(node) else {
+                break;
+            };
+            head = node.next.take();
+        }
+    }
+}
