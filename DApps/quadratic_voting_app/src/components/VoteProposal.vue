@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-gray-300 p-10 rounded flex items-center">
+  <div class="bg-gray-300 p-10 rounded flex proposals-center">
     <img
-      :src="`https://ipfs.io/ipfs/${item.imageHash}`"
-      alt="item image"
+      :src="`https://ipfs.io/ipfs/${proposal.imageHash}`"
+      alt="proposal image"
       class="w-1/12 mr-10 rounded shadow"
     />
     <div class="mr-5">
@@ -19,7 +19,7 @@
       >
         &uarr;
       </button>
-      <p class="text-lg text-center mt-2">{{ item.positiveWeight }}</p>
+      <p class="text-lg text-center mt-2">{{ proposal.positiveWeight }}</p>
     </div>
     <div class="mr-10">
       <button
@@ -35,15 +35,15 @@
       >
         &darr;
       </button>
-      <p class="text-lg text-center mt-2">{{ item.negativeWeight }}</p>
+      <p class="text-lg text-center mt-2">{{ proposal.negativeWeight }}</p>
     </div>
     <div>
-      <h2 class="text-xl font-bold mb-5">{{ item.title }}</h2>
-      <p class="text-gray-600 mb-5">{{ item.description }}</p>
+      <h2 class="text-xl font-bold mb-5">{{ proposal.title }}</h2>
+      <p class="text-gray-600 mb-5">{{ proposal.description }}</p>
     </div>
-    <div v-if="address() === item.owner" class="ml-auto">
+    <div v-if="address() === proposal.owner" class="ml-auto">
       <p class="mb-5 text-center">
-        Amount: {{ item.amount / 1_000_000_000 }} gwei
+        Amount: {{ proposal.amount / 1_000_000_000 }} gwei
       </p>
       <button
         @click="claimGwei"
@@ -76,8 +76,8 @@
   } from "@/lib/quadratic-voting"
 
   export default {
-    name: "VoteItem",
-    props: ["item"],
+    name: "VoteProposal",
+    props: ["proposal"],
     methods: {
       address,
       upvote() {
@@ -93,21 +93,21 @@
           this.cost = 0
         } else {
           const isPositive = this.weight > 0
-          const currWeight = await currentWeight(this.item.id, isPositive)
+          const currWeight = await currentWeight(this.proposal.id, isPositive)
           this.cost = await calcCost(currWeight, Math.abs(this.weight))
         }
       },
       async submitVote() {
         if (this.weight >= 0) {
           // submit psoitive vote if weight is positive
-          await positiveVote(this.item.id, this.weight, this.cost)
+          await positiveVote(this.proposal.id, this.weight, this.cost)
         } else if (this.weight < 0) {
           // submit negative vote if weight is negative
-          await negativeVote(this.item.id, -this.weight, this.cost)
+          await negativeVote(this.proposal.id, -this.weight, this.cost)
         }
       },
       async claimGwei() {
-        await claim(this.item.id) // transfers rewards to owner wallet
+        await claim(this.proposal.id) // transfers rewards to owner wallet
       }
     },
     data() {
@@ -120,8 +120,8 @@
     created() {
       const getWeight = async () => {
         // calculate the net weight to be used with voting controls
-        const posWeight = await currentWeight(this.item.id, true)
-        const negWeight = await currentWeight(this.item.id, false)
+        const posWeight = await currentWeight(this.proposal.id, true)
+        const negWeight = await currentWeight(this.proposal.id, false)
         this.weight = posWeight - negWeight
         // keep track of the weight we started with
         this.startedWeight = this.weight

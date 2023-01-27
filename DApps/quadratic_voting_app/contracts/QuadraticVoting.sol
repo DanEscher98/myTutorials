@@ -2,7 +2,7 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 contract QuadraticVoting {
-  struct Item {
+  struct Proposal {
     address payable owner;
     uint amount;
     bytes32 title;
@@ -14,17 +14,17 @@ contract QuadraticVoting {
     uint totalNegativeWeight;
   } 
   uint constant public voteCost = 10_000_000_000;
-  mapping(uint => Item) public items; // itemId => id
-  uint public itemCount = 0; // also next itemId
+  mapping(uint => Proposal) public proposals; // proposalId => id
+  uint public proposalCount = 0; // also next proposalId
 
-  event ItemCreated(uint itemId);
-  event Voted(uint itemId, uint weight, bool positive);
+  event ProposalCreated(uint proposalId);
+  event Voted(uint proposalId, uint weight, bool value);
 
-  function currentWeight(uint itemId, address addr, bool isPositive) public view returns(uint) {
+  function currentWeight(uint proposalId, address addr, bool isPositive) public view returns(uint) {
     if (isPositive) {
-      return items[itemId].positiveVotes[addr];
+      return proposals[proposalId].positiveVotes[addr];
     } else {
-      return items[itemId].negativeVotes[addr];
+      return proposals[proposalId].negativeVotes[addr];
     }
   }
 
@@ -39,22 +39,22 @@ contract QuadraticVoting {
     }
   }
 
-  function createItem(bytes32 title, string memory imageHash, string memory description) public {
-    uint itemId = itemCount++;
-    Item storage item = items[itemId];
-    item.owner = payable(msg.sender);
-    item.title = title;
-    item.imageHash = imageHash;
-    item.description = description;
-    emit ItemCreated(itemId);
+  function createProposal(bytes32 title, string memory imageHash, string memory description) public {
+    uint proposalId = proposalCount++;
+    Proposal storage proposal = proposals[proposalId];
+    proposal.owner = payable(msg.sender);
+    proposal.title = title;
+    proposal.imageHash = imageHash;
+    proposal.description = description;
+    emit ProposalCreated(proposalId);
   }
 
   /// emit a vote for or against
-  function emitVote(uint itemId, uint weight, bool vote) public payable {
-    Item storage item = items[itemId];
-    require(msg.sender != item.owner); // owners cannot vote on their own items
+  function emitVote(uint proposalId, uint weight, bool vote) public payable {
+    Proposal storage proposal = proposals[proposalId];
+    require(msg.sender != proposal.owner); // owners cannot vote on their own proposals
     
-    uint currWeight = item.positiveVotes[msg.sender];
+    uint currWeight = proposal.positiveVotes[msg.sender];
     if (currWeight == weight) {
       return; // no need to process further if vote has not changed
     }
@@ -63,33 +63,33 @@ contract QuadraticVoting {
     require(msg.value >= cost); //msg.value must be enough to cover the cost
 
     if (vote) { // vote for
-      item.positiveVotes[msg.sender] = weight;
-      item.totalPositiveWeight += weight - currWeight;
+      proposal.positiveVotes[msg.sender] = weight;
+      proposal.totalPositiveWeight += weight - currWeight;
       
       // weight cannot be both positive and negative simultaneously
-      item.totalNegativeWeight -= item.negativeVotes[msg.sender];
-      item.negativeVotes[msg.sender] = 0;
+      proposal.totalNegativeWeight -= proposal.negativeVotes[msg.sender];
+      proposal.negativeVotes[msg.sender] = 0;
 
-      item.amount += msg.value; // reward creator of item for their contribution
+      proposal.amount += msg.value; // reward creator of proposal for their contribution
     } else {    // vote against
-      item.totalPositiveWeight -= item.positiveVotes[msg.sender];
-      item.positiveVotes[msg.sender] = 0;
+      proposal.totalPositiveWeight -= proposal.positiveVotes[msg.sender];
+      proposal.positiveVotes[msg.sender] = 0;
 
-      // distribute voting cost to every item except for this one
-      uint reward = msg.value / (itemCount - 1);
-      for (uint i = 0; i < itemCount; i++) {
-        if (i != itemId) items[i].amount += reward;
+      // distribute voting cost to every proposal except for this one
+      uint reward = msg.value / (proposalCount - 1);
+      for (uint i = 0; i < proposalCount; i++) {
+        if (i != proposalId) proposals[i].amount += reward;
       }
     }
 
-    emit Voted(itemId, weight, vote);
+    emit Voted(proposalId, weight, vote);
   }
   
-  /// Allows the owner of a item to transfer any reward to their wallet
-  function claim(uint itemId) public {
-    Item storage item = items[itemId];
-    require(msg.sender == item.owner);
-    item.owner.transfer(item.amount);
-    item.amount = 0;
+  /// Allows the owner of a proposal to transfer any reward to their wallet
+  function claim(uint proposalId) public {
+    Proposal storage proposal = proposals[proposalId];
+    require(msg.sender == proposal.owner);
+    proposal.owner.transfer(proposal.amount);
+    proposal.amount = 0;
   }
 }

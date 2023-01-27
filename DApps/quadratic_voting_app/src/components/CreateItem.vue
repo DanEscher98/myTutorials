@@ -27,7 +27,7 @@
     /><br/>
     <input
       type="submit"
-      value="Create Item"
+      value="Create Proposal"
       class="
         block
         mx-auto
@@ -43,17 +43,17 @@
 </template>
 
 <script>
-  import { uploadFile, createItem } from "@/lib/quadratic-voting"
+  import { uploadFile, createProposal } from "@/lib/quadratic-voting"
   
   export default {
-    name: "CreateItem",
+    name: "CreateProposal",
     methods: {
       async uploadImage(e) {
         const file = e.target.files[0] // get file from oninput event
         this.imageHash = await uploadFile(file) // upload to IPFS network
       },
       async submit() {
-        await createItem(this.title, this.imageHash, this.description)
+        await createProposal(this.title, this.imageHash, this.description)
       }
     },
     data() {
