@@ -20,6 +20,7 @@ contract QuadraticVoting {
   event ProposalCreated(uint proposalId);
   event Voted(uint proposalId, uint weight, bool value);
 
+  /// how much a voter has bet into a proposal
   function currentWeight(uint proposalId, address addr, bool isPositive) public view returns(uint) {
     if (isPositive) {
       return proposals[proposalId].positiveVotes[addr];
@@ -28,6 +29,7 @@ contract QuadraticVoting {
     }
   }
 
+  /// calc the new cost of bet
   function calcCost(uint currWeight, uint weight) public pure returns(uint) {
     if (currWeight > weight) {
       return weight * weight * voteCost; // cost is always quadratic
