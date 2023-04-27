@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "wabotgpt"
+version = "0.1.0"
+description = ""
+authors = ["Danyiel Colin <danyiel5978@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.1"
+uvicorn = "^0.21.1"
+twilio = "^8.1.0"
+openai = "^0.27.4"
+python-decouple = "^3.8"
+sqlalchemy = "^2.0.10"
+psycopg2-binary = "^2.9.6"
+python-multipart = "^0.0.6"
+pyngrok = "^6.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+server = "wabotgpt.__main__:web_server"
