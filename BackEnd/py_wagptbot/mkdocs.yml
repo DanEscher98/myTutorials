@@ -1,0 +1,30 @@
+site_name: WhatsapBot
+site_url: https://example.com/
+nav:
+  - Home: index.md
+  - About: about.md
+
+markdown_extensions:
+  - smarty
+  - toc:
+      permalink: True
+  - sane_lists
+
+plugins:
+    - search
+    - mermaid2:
+        arguments:
+          theme: 'dark'
+
+extra_javascript:
+    - https://unpkg.com/mermaid@8.7.0/dist/mermaid.min.js
+
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - rust
+    - python
+    - bash
+

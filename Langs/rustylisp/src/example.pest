@@ -1,0 +1,28 @@
+// Hex literals
+hex         = _{ "0" | hex_nozero }
+hex_nozero  = _{ '1'..'9' | 'A'..'F' } 
+
+// Numeric literals
+digit       = _{ '0'..'9' }
+digits      = @{ digit+ }
+int         = @{ '0' | ('1'..'9' ~ digits?) }
+number      = @{ "-"? ~ int ~ ("." ~ digits)? }
+
+// Glyph definition
+codepoint   = ${  hex_nozero ~ hex ~ hex ~ hex ~ hex ~ hex |
+                  hex_nozero ~ hex ~ hex ~ hex ~ hex |
+                  hex ~ hex ~ hex ~ hex }
+glyph       = @{ "[" ~ codepoint ~ "]" }
+declaration =  { glyph ~ (!newline ~ any)* }
+reference   = ${ "@" ~ codepoint }
+coord_pair  = ${ number ~ "," ~ number }
+polyline    = ${ coord_pair ~ (";" ~ coord_pair)* }
+bodyitem    = _{ (reference | polyline) }
+definition  =  { declaration ~ newline ~ bodyitem ~ (newline ~ bodyitem)* }
+
+// Newlines
+newline     = _{ "\n" | "\r\n" }
+
+// Special rules, automatically inserted in non-atomic rules.
+whitespace  = _{ " " | "\t" }
+comment     = _{ "#" ~ (!newline ~ any)* }

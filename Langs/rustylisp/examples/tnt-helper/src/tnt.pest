@@ -1,0 +1,31 @@
+zero  =  { "0" }
+var   =  { "a" | "b" | "c" | "d" | "e" | var ~ "\'"}
+term  =  { zero | var | "S" ~ term }
+
+// Rules to make parts of well-formed formulas
+// NUMERALS:  0 is a numeral. A numeral preceded by S is also a numeral.
+// VARIABLES: 'a' is a variable. A variable followed by a prime is also a variable.
+// TERMS:     All numerals and variables are terms. A term preceded by S is also a term.
+// OPERATOR:  If s and t are terms, then so are (s + t) and (s • t).
+
+// TERMS may be divided into two categories:
+// (1) DEFINITE terms. These contain no variables.
+// (2) INDEFINITE terms. These contain variables.
+
+// Rules to make complete well-formed formulas.
+// ATOMS:     If s and t are terms, then s = t is an atom. If an atom contains
+//            a variable u, then u is free in it. Thus there are
+//            four free variables in the last example.
+// NEGATIONS: A well-formed formula preceded by a tilde is well-formed.
+// The quantification status of a variable does not change under negation.
+
+// COMPOUNDS: If x and y are well-formed formulas, and provided that no
+//            variable which is free in one is quantified in the other, then
+//            the following are well-formed formulas: <x ∧ y> <x ∨ y> <x ⊃ y>
+// The quantification status of a variable doesn't change here.
+
+// QUANTIFICATIONS: If u is a variable, and x is a well-formed formula in which
+//             u is free then the following strings are well-formed formulas:
+//             ∑u:x and ∀u:x
+// OPEN FORMULAS contain at least one free variable.
+// CLOSED FORMULAS (SENTENCES) contain no free variables.

@@ -1,0 +1,6 @@
+- imagen de milonga subir contenido material retrasado (reels)
+- calendario Abril y Mayo 
+    - todo dia 15 subir publicidad
+    - campaña de publicidad
+    - recordatorios periodicos (Whatsapp)
+    - 

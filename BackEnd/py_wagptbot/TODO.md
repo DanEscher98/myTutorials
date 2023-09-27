@@ -4,9 +4,7 @@
 
 ```mermaid
 flowchart LR
-    W("WhatsApp") ---|SMS| T("Twilio")
-    T ---|HTTP| A["App"]
-    A --- G("OpenAI GPT")
+    W("WhatsApp") ---|SMS| T("Twilio") ---|HTTP| A["App"] --- G("OpenAI GPT")
     A --- D[(SQL)]
     A --- L[/log/]
 ```

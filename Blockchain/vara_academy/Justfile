@@ -1,0 +1,39 @@
+set shell := ["bash", "-c"]
+image := "criptomx.com/danescher98/hackaton/geargcc12"
+engine := "podman"
+
+build:
+  hyperfine -r 1 --show-output \
+    '{{engine}} build -t {{image}} -f gear.Dockerfile'
+
+# Create a new contract from a template
+new template="dapps-ping":
+  @{{engine}} run --rm -v \
+    $(pwd):/app:Z {{image}} \
+    gear gcli new --template {{template}}
+
+# Compile an ink! contract
+compile workdir="":
+  hyperfine -r 1 --show-output \
+    '{{engine}} run -v \
+    $(pwd)/{{workdir}}:/app:Z {{image}} \
+    cargo build --manifest-path=/app/Cargo.toml --release'
+  @wasm_bin=$(find $(pwd)/{{workdir}}/target/wasm32-unknown-unknown/release -type f -name *.wasm);\
+    {{engine}} run -v $(pwd)/{{workdir}}:/app:Z {{image}} wasm-proc "$wasm_bin"
+  @printf "\n"; dua $(pwd)/{{workdir}}/target/wasm32-unknown-unknown/release/*.wasm
+
+# Run the test suite
+test workdir="":
+    {{engine}} run -it -v \
+    $(pwd)/{{workdir}}:/app:Z {{image}} \
+    cargo watch -x 'test --manifest-path=/app/Cargo.toml --release'
+
+# Run an interactive container session
+container:
+  {{engine}} run --rm -it {{image}}
+ 
+# Expand the contract macros
+expand:
+  cargo expand \
+    --no-default-features --target=wasm32-unknown-unknown \
+    | bat --language rust -n
