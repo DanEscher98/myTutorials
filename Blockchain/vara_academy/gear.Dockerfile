@@ -39,5 +39,7 @@ RUN release_url="https://api.github.com/repos/WebAssembly/binaryen/releases/late
  wget -qO - $release_url | jq .assets[2].browser_download_url | xargs wget -O /tmp/binaryen.tar.gz
 RUN tar -xvf /tmp/binaryen.tar.gz --directory /tmp; cp /tmp/binaryen-version_*/bin/* /bin
 
+ENV RUST_LOG=all
+
 # COPY . /app
 CMD ["/bin/bash"]

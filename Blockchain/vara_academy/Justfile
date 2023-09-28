@@ -1,8 +1,9 @@
 set shell := ["bash", "-c"]
 image := "criptomx.com/danescher98/hackaton/geargcc12"
 engine := "podman"
+editor := "lvim"
 
-build:
+build_img:
   hyperfine -r 1 --show-output \
     '{{engine}} build -t {{image}} -f gear.Dockerfile'
 
@@ -13,11 +14,11 @@ new template="dapps-ping":
     gear gcli new --template {{template}}
 
 # Compile an ink! contract
-compile workdir="":
+build workdir="":
   hyperfine -r 1 --show-output \
     '{{engine}} run -v \
     $(pwd)/{{workdir}}:/app:Z {{image}} \
-    cargo build --manifest-path=/app/Cargo.toml --release'
+    cargo build --manifest-path=/app/Cargo.toml --release --workspace'
   @wasm_bin=$(find $(pwd)/{{workdir}}/target/wasm32-unknown-unknown/release -type f -name *.wasm);\
     {{engine}} run -v $(pwd)/{{workdir}}:/app:Z {{image}} wasm-proc "$wasm_bin"
   @printf "\n"; dua $(pwd)/{{workdir}}/target/wasm32-unknown-unknown/release/*.wasm
@@ -31,6 +32,9 @@ test workdir="":
 # Run an interactive container session
 container:
   {{engine}} run --rm -it {{image}}
+
+edit workdir="":
+  {{editor}} $(pwd)/{{workdir}}/{src/contract.rs,io/src/lib.rs,state/src/lib.rs}
  
 # Expand the contract macros
 expand:
