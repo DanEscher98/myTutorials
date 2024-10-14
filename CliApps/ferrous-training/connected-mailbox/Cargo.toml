@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+members = ["simple-db", "tcp-server"]
+
+
+[workspace.dependencies]
+simple-db = { path = "simple-db" }
